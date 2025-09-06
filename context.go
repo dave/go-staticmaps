@@ -351,10 +351,10 @@ func (t *transformer) Rect() (bbox s2.Rect) {
 }
 
 // Render actually renders the map image including all map objects (markers, paths, areas)
-func (m *Context) Render() (image.Image, error) {
+func (m *Context) Render() (image.Image, int, error) {
 	zoom, center, err := m.determineZoomCenter()
 	if err != nil {
-		return nil, err
+		return nil, 0, err
 	}
 
 	tileSize := m.tileProvider.TileSize
@@ -373,7 +373,7 @@ func (m *Context) Render() (image.Image, error) {
 
 	for _, layer := range layers {
 		if err := m.renderLayer(gc, zoom, trans, tileSize, layer); err != nil {
-			return nil, err
+			return nil, zoom, err
 		}
 	}
 
@@ -404,7 +404,7 @@ func (m *Context) Render() (image.Image, error) {
 
 	// draw attribution
 	if attribution == "" {
-		return croppedImg, nil
+		return croppedImg, zoom, nil
 	}
 	_, textHeight := gc.MeasureString(attribution)
 	boxHeight := textHeight + 4.0
@@ -415,7 +415,7 @@ func (m *Context) Render() (image.Image, error) {
 	gc.SetRGBA(1.0, 1.0, 1.0, 0.75)
 	gc.DrawString(attribution, 4.0, float64(m.height)-4.0)
 
-	return croppedImg, nil
+	return croppedImg, zoom, nil
 }
 
 // RenderWithBounds actually renders the map image including all map objects (markers, paths, areas).

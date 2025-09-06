@@ -144,6 +144,6 @@ func (m *Marker) draw(gc *gg.Context, trans *transformer) {
 
 	if m.Label != "" {
 		gc.SetColor(m.LabelColor)
-		gc.DrawStringAnchored(m.Label, x, y-m.Size, 0.5, 0.5)
+		gc.DrawStringAnchored(m.Label, x, y-m.Size, -0.1, 1)
 	}
 }
